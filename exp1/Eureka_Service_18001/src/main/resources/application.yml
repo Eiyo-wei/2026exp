@@ -1,0 +1,17 @@
+server:
+  port: 18001
+spring:
+  application:
+    name: "eureka-service"
+
+#服务注册中心相关配置
+eureka:
+  instance: #创建实例
+    hostname: "eurekaServer18001" #域名
+  server:
+    enable-self-preservation: false #关闭自我保护机制，避免注册中心不在删除超时的微服务，本机微服务数量少
+  client:
+    register-with-eureka: false #是否将自己注册到eureka服务当中
+    fetch-registry: true #需要注册，因为已经变成集群，需要相互传递
+    service-url: #服务注册中心服务地址
+      defaultZone: "http://eurekaServer18000:18000/eureka/,http://eurekaServer18001:18001/eureka/,http://eurekaServer18002:18002/eureka/"
