@@ -24,7 +24,6 @@ import org.springframework.web.client.RestTemplate;
 @RequestMapping("/consumer")
 public class ConsumerController {
     private static final String PROVIDER_URL = "http://service-provider/api/books";
-    private static final String CUSTOM_PROVIDER_URL = "http://custom-provider/api/books";
 
     private final RestTemplate restTemplate;
     private final ProviderFeignClient feignClient;
@@ -100,16 +99,5 @@ public class ConsumerController {
             ports.add(feignClient.instance().port());
         }
         return Map.of("strategy", "same client-side LoadBalancer used by OpenFeign", "ports", ports);
-    }
-
-    @GetMapping("/loadbalancer/custom")
-    public Map<String, Object> customLoadBalancer(@RequestParam(defaultValue = "10") int times) {
-        List<Integer> ports = new ArrayList<>();
-        for (int i = 0; i < times; i++) {
-            ports.add(restTemplate.exchange(CUSTOM_PROVIDER_URL + "/instance", HttpMethod.GET, null,
-                    new ParameterizedTypeReference<ProviderResponse<String>>() {
-                    }).getBody().port());
-        }
-        return Map.of("strategy", "custom lowest-port-first strategy", "ports", ports);
     }
 }
